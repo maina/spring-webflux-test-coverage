@@ -5,6 +5,8 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class PostDto {
 	@NotEmpty
@@ -14,5 +16,8 @@ public class PostDto {
 	@NotEmpty
 	@NotNull
 	private String body;
-	
+
+	Long id;
+
+
 }

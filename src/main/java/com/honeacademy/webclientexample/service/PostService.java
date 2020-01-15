@@ -51,6 +51,18 @@ public class PostService {
 		return Mono.just(postRepository.save(post));
 
 	}
+	public Mono<Post> getPostById(Long id) throws Exception {
+		log.debug("get post with id" + id);
+		Optional<Post> existingPost = postRepository.findById(id);
+		if (!existingPost.isPresent()) {
+			throw new NotFoundException(String.format("Post with id %d not found", id));
+		}
+		Post post = existingPost.get();
+
+
+		return Mono.just(post);
+
+	}
 
 	public Mono<List<Post>> listPosts(int offset, int limit) {
 		Pageable pageable = PageRequest.of(offset / limit, limit, Sort.by("createdDate").descending());
