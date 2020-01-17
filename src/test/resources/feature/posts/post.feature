@@ -1,14 +1,31 @@
-Feature: dogs end-point that uses jdbc as part of the test
+Feature: posts end-point that tests posts crud and clean up the db after scenarios
 
 Background:
 * url demoBaseUrl
 * configure logPrettyRequest = true
 * configure logPrettyResponse = true
 
-Scenario: create and retrieve a post
-  * json reqBody = read('classpath:feature/common/post-request.json')
+# the JSON returned from 'karate.info' has the following properties:
+#   - featureDir
+#   - featureFileName
+#   - scenarioName
+#   - scenarioType (either 'Scenario' or 'Scenario Outline')
+#   - scenarioDescription
+#   - errorMessage (will be not-null if the Scenario failed)
 
-# create a dog
+* configure afterScenario =
+"""
+function(){
+  var info = karate.info;
+  karate.log('after', info.scenarioType + ':', info.scenarioName);
+  karate.call('classpath:feature/common/features/posts-after-scenario.feature', { caller: info.featureFileName });
+}
+"""
+
+Scenario: create and retrieve a post
+* json reqBody = read('classpath:feature/common/post-request.json')
+
+# create a post
 Given path 'posts'
 And set reqBody.title = 'sample post'
 And set reqBody.body = 'sample post body'

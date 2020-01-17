@@ -20,6 +20,7 @@
         <karate-version>0.9.4</karate-version>
         <cucumber.reporting.version>4.6.0</cucumber.reporting.version>
         <maven.surefire.version>2.22.2</maven.surefire.version>
+		<jacoco.plugin.version>0.8.4</jacoco.plugin.version>
 
 
 	</properties>
@@ -101,11 +102,15 @@
 	</dependencies>
 
 	<build>
+		<testResources>
+			<testResource>
+				<directory>src/test/java</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</testResource>
+		</testResources>
 		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -113,48 +118,17 @@
 				<configuration>
 					<includes>
 						<include>demo/DemoTestParallel.java</include>
+						<include>mock/contract/*Test.java</include>
+						<include>mock/micro/*Runner.java</include>
+						<include>mock/proxy/*Runner.java</include>
+						<include>ssl/*Test.java</include>
 					</includes>
-					<!-- needed for jacoco to integrate properly -->
-					<argLine>-Dfile.encoding=UTF-8</argLine>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.2</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>report</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+
 		</plugins>
 	</build>
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<!-- select non-aggregate reports -->
-							<report>report</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-		</plugins>
-	</reporting>
+
 	<profiles>
 		<profile>
 			<id>coverage</id>
@@ -169,7 +143,7 @@
 								<include>demo/DemoTestParallel.java</include>
 							</includes>
 							<!-- needed for jacoco to integrate properly -->
-							<argLine>-Dfile.encoding=UTF-8</argLine>
+							<!--<argLine>${argLine}</argLine>-->
 						</configuration>
 					</plugin>
 					<plugin>
