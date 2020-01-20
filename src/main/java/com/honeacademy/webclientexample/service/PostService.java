@@ -69,5 +69,9 @@ public class PostService {
 		return Mono.just(postRepository.findAll(pageable).getContent());
 
 	}
+	public Mono<Boolean> deletePost(Long id){
+		postRepository.deleteById(id);
+		return Mono.just(true);
+	}
 
 }
