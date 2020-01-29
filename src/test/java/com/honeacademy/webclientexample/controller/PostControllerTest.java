@@ -103,6 +103,27 @@ public class PostControllerTest {
         });
 
     }
+    @Test
+    public void test_update_post_successful() throws Exception {
+
+        Post post = mockPost();
+        Mono<Post> postMono = Mono.just(mockPost());
+        when(postService.updatePost(any(PostDto.class),any(Long.class))).thenReturn(postMono);
+
+        webTestClient.put()
+                .uri("/posts/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(post), Post.class)
+                .exchange()
+                .expectStatus().isCreated().expectBody(Post.class).value(response -> {
+            assertNotNull(response);
+            Assert.isTrue(response.getId().equals(post.getId()), "id not equal");
+            Assert.isTrue(response.getBody().equals(post.getBody()), "body not equal");
+            Assert.isTrue(response.getTitle().equals(post.getTitle()), "title not equal");
+        });
+
+    }
 
     @Test
     public void test_delete_post_by_id_successful() {
